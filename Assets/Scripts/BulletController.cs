@@ -29,7 +29,7 @@ public class BulletController : MonoBehaviour
         else if (CompareTag("Bullet") && other.CompareTag("Enemy"))
         {
             _pool.Release(gameObject);
-            other.gameObject.SetActive(false);
+            //other.gameObject.SetActive(false);
             GameManager.Instance.ChangeScore(100);
         }
     }

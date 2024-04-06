@@ -5,13 +5,23 @@ using UnityEngine.Pool;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject[] _objectsPrefabs;
+    [SerializeField] private GameObject[] _enemyPrefabs, _pickupPrefabs;
     [SerializeField] private int _xLimits;
     private ObjectPool<GameObject> _objectPool;
     
     void Start()
     {
         _objectPool = new ObjectPool<GameObject>(CreateObject, RetrieveObject, ReleaseObject, DestroyObject);
+
+        foreach (var prefab in _pickupPrefabs)
+        {
+            CreateObject(prefab);
+        }
+        foreach (var prefab in _enemyPrefabs)
+        {
+            CreateObject(prefab);
+        }
+        
         StartCoroutine(InstantiateObject());
     }
 
@@ -19,8 +29,7 @@ public class Spawner : MonoBehaviour
     {
         while (!GameManager.Instance.IsGameOver)
         {
-            float delay = Random.Range(1, 4);
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSeconds(.5f);
             _objectPool.Get();
         }
     }
@@ -28,8 +37,16 @@ public class Spawner : MonoBehaviour
     private GameObject CreateObject()
     {
         Vector3 position = SetRandomPosition();
-        GameObject randomObj = _objectsPrefabs[Random.Range(0, _objectsPrefabs.Length)];
+        GameObject randomObj = GetRandomObject();
         GameObject obj = Instantiate(randomObj, position, transform.rotation, transform);
+        obj.GetComponent<SpawnerObject>().Pool = _objectPool;
+        return obj;
+    }
+    
+    private GameObject CreateObject(GameObject prefab)
+    {
+        Vector3 position = SetRandomPosition();
+        GameObject obj = Instantiate(prefab, position, transform.rotation, transform);
         obj.GetComponent<SpawnerObject>().Pool = _objectPool;
         return obj;
     }
@@ -49,7 +66,12 @@ public class Spawner : MonoBehaviour
 
     private void DestroyObject(GameObject bullet)
     {
-        Object.Destroy(bullet);
+        Destroy(bullet);
+    }
+
+    private GameObject GetRandomObject()
+    {
+        return Random.Range(0, 100) > 70? _pickupPrefabs[Random.Range(0, _pickupPrefabs.Length)]  : _enemyPrefabs[Random.Range(0, _enemyPrefabs.Length)];
     }
     
     private Vector3 SetRandomPosition()

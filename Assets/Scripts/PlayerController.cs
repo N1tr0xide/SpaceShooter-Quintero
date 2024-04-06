@@ -39,7 +39,17 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             GameManager.Instance.ChangeHealth(-1);
-            other.gameObject.SetActive(false);
+            //other.gameObject.GetComponent<SpawnerObject>().Pool.Release(other.gameObject);
+        }
+        else if (other.CompareTag("HealthPickup"))
+        {
+            GameManager.Instance.ChangeHealth(1);
+            //other.gameObject.GetComponent<SpawnerObject>().Pool.Release(other.gameObject);
+        }
+        else if (other.CompareTag("X2Pickup"))
+        {
+            GameManager.Instance.IncreaseMultiplier();
+            //other.gameObject.GetComponent<SpawnerObject>().Pool.Release(other.gameObject);
         }
     }
 }

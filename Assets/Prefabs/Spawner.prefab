@@ -118,8 +118,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063a18b18634508478ada0f6d8a39f14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectsPrefabs:
+  _enemyPrefabs:
   - {fileID: 444428997506874407, guid: 39df5e0500d6dd8429013b1571e88de2, type: 3}
   - {fileID: 3166018443655941661, guid: 506a5f6f54b9063448ef40d8fb8d5050, type: 3}
   - {fileID: 1004547701008598807, guid: 838dc358299efc443927af76e2869ba4, type: 3}
-  _xLimits: 12
+  _pickupPrefabs:
+  - {fileID: 2168589818960651733, guid: 1dfc06f184e4a7447b8f2aadc3d3dc96, type: 3}
+  - {fileID: 3411329383798273756, guid: 7b565c477588b9b4e8f3805ff4dfee33, type: 3}
+  _xLimits: 10

@@ -19,6 +19,11 @@ public class SpawnerObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("DeathZone")) Pool.Release(gameObject);
+        if(gameObject.CompareTag("HealthPickup") || gameObject.CompareTag("X2Pickup"))
+        {
+            if(other.CompareTag("Bullet") || other.CompareTag("Enemy")) return;
+            Pool.Dispose();
+        }
+        else if(!other.CompareTag("Enemy")) Pool.Release(gameObject);
     }
 }
