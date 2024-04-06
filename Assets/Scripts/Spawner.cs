@@ -8,9 +8,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] _objectsPrefabs;
     [SerializeField] private int _xLimits;
     private ObjectPool<GameObject> _objectPool;
-    private bool _isGameOver;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         _objectPool = new ObjectPool<GameObject>(CreateObject, RetrieveObject, ReleaseObject, DestroyObject);
@@ -19,7 +17,7 @@ public class Spawner : MonoBehaviour
 
     private IEnumerator InstantiateObject()
     {
-        while (!_isGameOver)
+        while (!GameManager.Instance.IsGameOver)
         {
             float delay = Random.Range(1, 4);
             yield return new WaitForSeconds(delay);
@@ -29,22 +27,18 @@ public class Spawner : MonoBehaviour
 
     private GameObject CreateObject()
     {
-        float randomX = transform.position.x + Random.Range(-_xLimits, _xLimits);
-        Vector3 position = new Vector3(randomX, transform.position.y, transform.position.z);
-        
+        Vector3 position = SetRandomPosition();
         GameObject randomObj = _objectsPrefabs[Random.Range(0, _objectsPrefabs.Length)];
-        GameObject obj = GameObject.Instantiate(randomObj, position, transform.rotation);
+        GameObject obj = Instantiate(randomObj, position, transform.rotation, transform);
         obj.GetComponent<SpawnerObject>().Pool = _objectPool;
         return obj;
     }
-
+    
     private void RetrieveObject(GameObject obj)
     {
-        float randomX = transform.position.x + Random.Range(-_xLimits, _xLimits);
-        Vector3 position = new Vector3(randomX, transform.position.y, transform.position.z);
+        Vector3 position = SetRandomPosition();
         obj.transform.position = position;
         obj.transform.rotation = transform.rotation;
-        
         obj.SetActive(true);
     }
 
@@ -56,5 +50,12 @@ public class Spawner : MonoBehaviour
     private void DestroyObject(GameObject bullet)
     {
         Object.Destroy(bullet);
+    }
+    
+    private Vector3 SetRandomPosition()
+    {
+        float randomX = transform.position.x + Random.Range(-_xLimits, _xLimits);
+        Vector3 position = new Vector3(randomX, transform.position.y, transform.position.z);
+        return position;
     }
 }

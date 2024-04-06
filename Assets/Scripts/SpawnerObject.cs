@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,5 +15,10 @@ public class SpawnerObject : MonoBehaviour
         {
             if(_pool == null) _pool = value;
         } 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("DeathZone")) Pool.Release(gameObject);
     }
 }

@@ -2,13 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
 public class ShootingEnemy : SpawnerObject
 {
-    [SerializeField] private float _speed, _lifeTime;
-    private bool _isGameOver;
+    [SerializeField] private float _speed;
     private BulletPoolerController _bulletPool;
     private GameObject _player;
 
@@ -20,32 +18,25 @@ public class ShootingEnemy : SpawnerObject
 
     private void OnEnable()
     {
-        StartCoroutine(SelfDeactivate(_lifeTime));
-        StartCoroutine(InstantiateObject());
+        StartCoroutine(ShootBullet());
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void Update()
     {
         float zPosition = transform.position.z - _speed * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, transform.position.y, zPosition);
     }
-    
-    private IEnumerator SelfDeactivate(float lifetime)
+
+    private IEnumerator ShootBullet()
     {
-        yield return new WaitForSeconds(lifetime);
-        Pool.Release(gameObject);
-    }
-    
-    private IEnumerator InstantiateObject()
-    {
-        while (!_isGameOver)
+        while (!GameManager.Instance.IsGameOver)
         {
             float delay = Random.Range(2, 4);
             yield return new WaitForSeconds(delay);
             GameObject newBullet = _bulletPool.BulletPool.Get();
             newBullet.transform.position = transform.position;
             newBullet.transform.LookAt(_player.transform.position);
+            newBullet.tag = "Enemy";
         }
     }
 }

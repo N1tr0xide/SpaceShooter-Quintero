@@ -6,21 +6,15 @@ using UnityEngine.Pool;
 
 public class BulletController : MonoBehaviour
 {
-    [SerializeField] private float _speed, _lifeTime;
+    [SerializeField] private float _speed;
     private ObjectPool<GameObject> _pool;
 
     public ObjectPool<GameObject> Pool
     {
-        get => _pool;
         set
         {
             if(_pool == null) _pool = value;
         } 
-    }
-
-    private void OnEnable()
-    {
-        StartCoroutine(SelfDeactivate(_lifeTime));
     }
 
     void Update()
@@ -28,9 +22,15 @@ public class BulletController : MonoBehaviour
         transform.Translate(Vector3.forward * (_speed * Time.deltaTime), Space.Self);
     }
 
-    private IEnumerator SelfDeactivate(float lifetime)
+    private void OnTriggerEnter(Collider other)
     {
-        yield return new WaitForSeconds(lifetime);
-        _pool.Release(gameObject);
+        if(other.CompareTag("DeathZone")) _pool.Release(gameObject);
+        
+        else if (CompareTag("Bullet") && other.CompareTag("Enemy"))
+        {
+            _pool.Release(gameObject);
+            other.gameObject.SetActive(false);
+            GameManager.Instance.ChangeScore(100);
+        }
     }
 }
