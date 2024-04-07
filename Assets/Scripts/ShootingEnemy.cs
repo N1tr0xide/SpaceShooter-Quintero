@@ -8,16 +8,15 @@ public class ShootingEnemy : SpawnerObject
 {
     [SerializeField] private float _speed;
     private BulletPoolerController _bulletPool;
-    private GameObject _player;
 
     private void Start()
     {
-        _player = GameManager.Player;
-        _bulletPool = GameManager.Instance.BulletPooler;
+        
     }
 
     private void OnEnable()
     {
+        _bulletPool = GameManager.Instance.BulletPooler;
         StartCoroutine(ShootBullet());
     }
     
@@ -35,8 +34,9 @@ public class ShootingEnemy : SpawnerObject
             yield return new WaitForSeconds(delay);
             GameObject newBullet = _bulletPool.BulletPool.Get();
             newBullet.transform.position = transform.position;
-            newBullet.transform.LookAt(_player.transform.position);
+            newBullet.transform.LookAt(GameManager.Player.transform.position);
             newBullet.tag = "Enemy";
+            GameManager.Instance.PlayEnemyShootingSfx();
         }
     }
 }

@@ -32,24 +32,25 @@ public class PlayerController : MonoBehaviour
         newBullet.transform.position = transform.position;
         newBullet.transform.rotation = transform.rotation;
         newBullet.tag = "Bullet";
+        GameManager.Instance.PlayPlayerShootingSfx();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if(GameManager.Instance.IsGameOver) return;
+        
         if (other.CompareTag("Enemy"))
         {
             GameManager.Instance.ChangeHealth(-1);
-            //other.gameObject.GetComponent<SpawnerObject>().Pool.Release(other.gameObject);
+            GameManager.Instance.PlayPlayerDamagedSfx();
         }
         else if (other.CompareTag("HealthPickup"))
         {
             GameManager.Instance.ChangeHealth(1);
-            //other.gameObject.GetComponent<SpawnerObject>().Pool.Release(other.gameObject);
         }
         else if (other.CompareTag("X2Pickup"))
         {
             GameManager.Instance.IncreaseMultiplier();
-            //other.gameObject.GetComponent<SpawnerObject>().Pool.Release(other.gameObject);
         }
     }
 }
